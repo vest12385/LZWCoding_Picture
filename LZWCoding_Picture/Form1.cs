@@ -27,11 +27,11 @@ namespace LZWCoding_Picture
             openFileDialog1.FileName = "";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 textBox1.Text = openFileDialog1.FileName;
-            Image picture = new Bitmap( textBox1.Text );
-            pictureBox1.Image = picture;
             //textBox.Text.Substring(textBox1.Text.LastIndexOf(@"\") + 1, textBox1.Text.Count() - textBox1.Text.LastIndexOf(@"\") - 1)
             try
             {
+                Image picture = new Bitmap(textBox1.Text);
+                pictureBox1.Image = picture;
                 Bitmap sr1 = new Bitmap(textBox1.Text);
                 textBox4.Text = textBox1.Text.Substring(0, textBox1.Text.LastIndexOf(@"\"));
             }
@@ -56,7 +56,7 @@ namespace LZWCoding_Picture
                 List<List<string>> PixelColor = getPixelColor(pictureBox1.Image);
                 List<Dictionary<string, int>> dictionary = new List<Dictionary<string,int>>();
                 List<string> outputColor = new List<string>();
-                List<List<string>> PixelColorDecoder = new List<List<string>>(); ;
+                List<List<string>> PixelColorDecoder = new List<List<string>>();
                 foreach( List<string> oneColor in PixelColor )
                 {
                     LZWEncoder.LZW_Encode encoder = new LZWEncoder.LZW_Encode(oneColor, textBox4.Text);
@@ -73,17 +73,6 @@ namespace LZWCoding_Picture
                     LZWDecoder.LZW_Decode decoder = new LZWDecoder.LZW_Decode(dictionary[i], outputColor[i], textBox4.Text);
                     PixelColorDecoder.Add(decoder.getInput.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList());
                 }
-
-                //for (int i = 0; i < PixelColorDecoder.Count(); i++)
-                //{
-                //    for (int j = 0; j < PixelColorDecoder[i].Count();j++)
-                //    {
-                //        if ( !( PixelColor[i][j] == PixelColorDecoder[i][j] + "," ))
-                //        {
-                //            MessageBox.Show( "mather fucker" );
-                //        }
-                //    }
-                //}
                 Image picture = new Bitmap(pictureBox1.Image.Width, pictureBox1.Image.Height, PixelFormat.Format24bppRgb);
                 picture = reconstruction(PixelColorDecoder, picture);
                 picture.Save(textBox4.Text + @"\" + textBox1.Text.Substring(textBox1.Text.LastIndexOf(@"\") + 1, textBox1.Text.LastIndexOf(@".") - textBox1.Text.LastIndexOf(@"\") - 1) + "_decode" + ".png", ImageFormat.Png);
@@ -139,7 +128,14 @@ namespace LZWCoding_Picture
                     //MessageBox.Show(pictureBitmap.GetPixel(pixelWidth, pixelHight).G.ToString());
                 }
             }
-            return pictureBitmap;
+            Bitmap clone = new Bitmap(pictureBitmap.Width, pictureBitmap.Height, PixelFormat.Format24bppRgb);
+            MessageBox.Show(pictureBox1.Image.PixelFormat.ToString());
+            using (Graphics gr = Graphics.FromImage(clone))
+            {
+                gr.DrawImage(pictureBitmap, new Rectangle(0, 0, clone.Width, clone.Height));
+            }
+            MessageBox.Show(clone.PixelFormat.ToString());
+            return clone;
         }
     }
 }
