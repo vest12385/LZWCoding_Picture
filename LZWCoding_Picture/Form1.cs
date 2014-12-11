@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics; //Stopwatch
 
 namespace LZWCoding_Picture
 {
@@ -46,6 +47,8 @@ namespace LZWCoding_Picture
             }
             else
             {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
                 FileInfo file1 = new FileInfo(textBox4.Text + @"\EncodeDictionary.txt");
                 FileInfo file2 = new FileInfo(textBox4.Text + @"\DecodeDictionary.txt");
                 if (file1.Exists || file2.Exists)
@@ -83,6 +86,8 @@ namespace LZWCoding_Picture
                 //textBox8.Text = f1.Length.ToString();
                 //double CompressionRate = (double)f2.Length / (double)f1.Length;
                 //textBox6.Text = CompressionRate.ToString();
+                sw.Stop();
+                MessageBox.Show((Convert.ToDecimal(sw.ElapsedMilliseconds) / 1000).ToString() + "S");
             }
         }
 
@@ -129,12 +134,12 @@ namespace LZWCoding_Picture
                 }
             }
             Bitmap clone = new Bitmap(pictureBitmap.Width, pictureBitmap.Height, PixelFormat.Format24bppRgb);
-            MessageBox.Show(pictureBox1.Image.PixelFormat.ToString());
+            //MessageBox.Show(pictureBox1.Image.PixelFormat.ToString());
             using (Graphics gr = Graphics.FromImage(clone))
             {
                 gr.DrawImage(pictureBitmap, new Rectangle(0, 0, clone.Width, clone.Height));
             }
-            MessageBox.Show(clone.PixelFormat.ToString());
+            //MessageBox.Show(clone.PixelFormat.ToString());
             return clone;
         }
     }
